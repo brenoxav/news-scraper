@@ -3,36 +3,27 @@ require 'open-uri'
 require 'pry'
 
 # Terminal colors
-$WORLD_NEWS_COLOR = "\x1b[0;30;43m"
-$WORLD_NEWS_COLOR_ = "\x1b[0;33;40m"
-$TECH_NEWS_COLOR = "\x1b[0;30;42m"
-$TECH_NEWS_COLOR_ = "\x1b[0;32;40m"
-$DEV_NEWS_COLOR = "\x1b[0;30;47m"
-$DEV_NEWS_COLOR_ = "\x1b[0;37;40m"
-$CLOSING_COLOR_BLOCK = "\x1b[0m"
+$COLOR_1_BG = "\x1b[0;30;43m"
+$COLOR_1_FG = "\x1b[0;33;40m"
+$COLOR_2_BG = "\x1b[0;30;42m"
+$COLOR_2_FG = "\x1b[0;32;40m"
+$COLOR_END = "\x1b[0m"
 
-# News Sources URL's
+# News sources URL's
 $REUTERS_URL = 'https://www.reuters.com/news/world'
 $AP_URL = 'https://apnews.com/hub/international-news'
 $BBC_URL = 'https://www.bbc.com/news/world'
 
-$THEVERGE_URL = 'https://www.theverge.com/'
-$CNET_URL = 'https://www.cnet.com/'
-$WIRED_URL = 'https://www.wired.com/'
-
-$FCC_URL = 'https://www.freecodecamp.org/news/'
-$DEV_URL = 'https://dev.to/t/webdev'
-$TNW_URL = 'https://thenextweb.com/dd/'
-
-# Number of news stories
+# Number of stories
 $NUM_OF_STORIES = 3
 
 class Story
-  def initialize (source, titles, summaries, timestamps, stories_url, num_of_stories)
+  def get_stories (source, titles, summaries, timestamps, stories_url, num_of_stories)
     @source = source
     @stories = Array.new
     num_of_stories.times { |i|
       @stories[i] = {
+        "source" => source,
         "title" => titles[i],
         "summary" => summaries[i],
         "timestamp" => timestamps[i],
@@ -43,11 +34,11 @@ class Story
   end
 
   def print_stories
-    puts "#{$DEV_NEWS_COLOR}\nLATEST STORIES FROM #{@source.upcase}#{$CLOSING_COLOR_BLOCK}\n\n"
+    puts "#{$COLOR_2_BG} LATEST STORIES FROM #{@source.upcase} #{$COLOR_END}\n\n"
     @stories.each { |story|
-      puts "#{$DEV_NEWS_COLOR}#{story['title']} (#{story['timestamp']})#{$CLOSING_COLOR_BLOCK}"
-      puts "#{$DEV_NEWS_COLOR_}#{story['summary']}#{$CLOSING_COLOR_BLOCK}\n\n"
-      puts "#{$DEV_NEWS_COLOR_}#{story['story_url']}#{$CLOSING_COLOR_BLOCK}\n\n"
+      puts "#{$COLOR_1_BG} #{story['title']} (#{story['timestamp']}) #{$COLOR_END}"
+      puts "#{$COLOR_1_FG} #{story['summary']} #{$COLOR_END}\n"
+      puts "#{$COLOR_1_FG} #{story['story_url']} #{$COLOR_END}\n\n"
     }
   end
 end
@@ -65,23 +56,40 @@ class Scraper < Story
 end
 
 class ReutersScraper < Scraper
-  def get_stories
+  @@url = $REUTERS_URL
+  def initialize
+    super(@@url)
     @source = 'Reuters'
     titles = @doc.css('.story-content>a>h3.story-title').map { |h3| h3.content.strip }
     summaries = @doc.css('.story-content>p').map { |p| p.content.strip }
     timestamps = @doc.css('.story-content>time>span.timestamp').map { |span| span.content.strip }
     stories_url = @doc.css('.story-content>a').map { |a| 'https://www.reuters.com'+a.attribute('href').value.strip }
-    Story.new(@source, titles, summaries, timestamps, stories_url, $NUM_OF_STORIES)
+    get_stories(@source, titles, summaries, timestamps, stories_url, $NUM_OF_STORIES)
   end
 end
 
 class ApScraper < Scraper
-  def get_stories
+  @@url = $AP_URL
+  def initialize
+    super(@@url)
     @source = 'Associated Press'
     titles = @doc.css('.FeedCard>.CardHeadline>a>h1').map { |h1| h1.content.strip }
     summaries = @doc.css('.FeedCard>a:nth-of-type(2)>div>p').map { |p| p.content.strip }
-    timestamps = @doc.css('.FeedCard>.CardHeadline>div>span.Timestamp').map { |span| span.content.strip }
+    timestamps = @doc.css('.FeedCard>.CardHeadline>div>span.Timestamp').map { |span| span.attribute('title').value.strip[22..49] }
     stories_url = @doc.css('.FeedCard>.CardHeadline>a').map { |a| 'https://www.apnews.com'+a.attribute('href').value.strip }
-    Story.new(@source, titles, summaries, timestamps, stories_url, $NUM_OF_STORIES)
+    get_stories(@source, titles, summaries, timestamps, stories_url, $NUM_OF_STORIES)
+  end
+end
+
+class BbcScraper < Scraper
+  @@url = $BBC_URL
+  def initialize
+    super(@@url)
+    @source = 'BBC'
+    x, *titles = @doc.css('.gs-c-promo-heading>h3').map { |h3| h3.content.strip }
+    x, *summaries = @doc.css('p.gs-c-promo-summary').map { |p| p.content.strip }
+    x, *timestamps = @doc.css('.gs-c-timestamp>time>span.gs-u-vh').map { |span| span.content.strip }
+    x, *stories_url = @doc.css('a.gs-c-promo-heading').map { |a| 'https://www.bbc.com'+a.attribute('href').value.strip }
+    get_stories(@source, titles, summaries, timestamps, stories_url, $NUM_OF_STORIES)
   end
 end

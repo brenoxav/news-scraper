@@ -3,13 +3,13 @@ require 'open-uri'
 require 'pry'
 
 # Terminal colors
-WORLD_NEWS_COLOR = "\x1b[0;30;43m"
-WORLD_NEWS_COLOR_ = "\x1b[0;33;40m"
-TECH_NEWS_COLOR = "\x1b[0;30;42m"
-TECH_NEWS_COLOR_ = "\x1b[0;32;40m"
-DEV_NEWS_COLOR = "\x1b[0;30;47m"
-DEV_NEWS_COLOR_ = "\x1b[0;37;40m"
-CLOSING_COLOR_BLOCK = "\x1b[0m"
+$WORLD_NEWS_COLOR = "\x1b[0;30;43m"
+$WORLD_NEWS_COLOR_ = "\x1b[0;33;40m"
+$TECH_NEWS_COLOR = "\x1b[0;30;42m"
+$TECH_NEWS_COLOR_ = "\x1b[0;32;40m"
+$DEV_NEWS_COLOR = "\x1b[0;30;47m"
+$DEV_NEWS_COLOR_ = "\x1b[0;37;40m"
+$CLOSING_COLOR_BLOCK = "\x1b[0m"
 
 # News Sources URL's
 $REUTERS_URL = 'https://www.reuters.com/news/world'
@@ -28,54 +28,60 @@ $TNW_URL = 'https://thenextweb.com/dd/'
 $NUM_OF_STORIES = 3
 
 class Story
-  def initialize (source = 'News', titles, summaries, timestamps, num_of_stories)
+  def initialize (source, titles, summaries, timestamps, stories_url, num_of_stories)
+    @source = source
     @stories = Array.new
     num_of_stories.times { |i|
       @stories[i] = {
         "title" => titles[i],
         "summary" => summaries[i],
-        "timestamp" => timestamps[i]
+        "timestamp" => timestamps[i],
+        "story_url" => stories_url[i]
       }
     }
     @stories
   end
 
   def print_stories
+    puts "#{$DEV_NEWS_COLOR}\nLATEST STORIES FROM #{@source.upcase}#{$CLOSING_COLOR_BLOCK}\n\n"
     @stories.each { |story|
-      puts "#{$DEV_NEWS_COLOR}#{story['title'].content.strip} (#{story['timestamp'].content.strip})#{$CLOSING_COLOR_BLOCK}"
-      puts "#{$DEV_NEWS_COLOR_}#{story['summary'].content.strip}#{$CLOSING_COLOR_BLOCK}\n\n"
+      puts "#{$DEV_NEWS_COLOR}#{story['title']} (#{story['timestamp']})#{$CLOSING_COLOR_BLOCK}"
+      puts "#{$DEV_NEWS_COLOR_}#{story['summary']}#{$CLOSING_COLOR_BLOCK}\n\n"
+      puts "#{$DEV_NEWS_COLOR_}#{story['story_url']}#{$CLOSING_COLOR_BLOCK}\n\n"
     }
   end
 end
 
 class Scraper < Story
-  def initialize(source, url)
-    @source = source
+  def initialize(url)
     @url = url
     @doc = get_doc(url)
   end
-
   def get_doc(url)
-    html = open(@url) # Get the HTML from the URL
-    doc = Nokogiri::HTML(html) # Get nodes from HTML
+    html = URI.open(@url)
+    doc = Nokogiri::HTML(html)
     doc
   end
 end
 
 class ReutersScraper < Scraper
-  # Should return the stories from Reuters
-  #@source = 'Reuters'
-  #@url = $REUTERS_URL
-  #@num_of_stories = $NUM_OF_STORIES
-
   def get_stories
-    titles = @doc.css('.story-content h3.story-title')
-    summaries = @doc.css('.story-content>p')
-    timestamps = @doc.css('.story-content span.timestamp')
-    @stories = Story.new(@source, titles, summaries, timestamps, $NUM_OF_STORIES)
+    @source = 'Reuters'
+    titles = @doc.css('.story-content>a>h3.story-title').map { |h3| h3.content.strip }
+    summaries = @doc.css('.story-content>p').map { |p| p.content.strip }
+    timestamps = @doc.css('.story-content>time>span.timestamp').map { |span| span.content.strip }
+    stories_url = @doc.css('.story-content>a').map { |a| 'https://www.reuters.com'+a.attribute('href').value.strip }
+    Story.new(@source, titles, summaries, timestamps, stories_url, $NUM_OF_STORIES)
   end
 end
 
-
-reuters_scrape = ReutersScraper.new('Reuters', $REUTERS_URL)
-reuters_scrape.get_stories.print_stories
+class ApScraper < Scraper
+  def get_stories
+    @source = 'Associated Press'
+    titles = @doc.css('.FeedCard>.CardHeadline>a>h1').map { |h1| h1.content.strip }
+    summaries = @doc.css('.FeedCard>a:nth-of-type(2)>div>p').map { |p| p.content.strip }
+    timestamps = @doc.css('.FeedCard>.CardHeadline>div>span.Timestamp').map { |span| span.content.strip }
+    stories_url = @doc.css('.FeedCard>.CardHeadline>a').map { |a| 'https://www.apnews.com'+a.attribute('href').value.strip }
+    Story.new(@source, titles, summaries, timestamps, stories_url, $NUM_OF_STORIES)
+  end
+end

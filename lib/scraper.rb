@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'nokogiri'
 require 'open-uri'
 require_relative '../lib/settings'
@@ -43,8 +41,10 @@ class ApScraper < Scraper
     super
     titles = @doc.css('.FeedCard>.CardHeadline>a>h1').map { |h1| h1.content.strip }
     summaries = @doc.css('.FeedCard>a:nth-of-type(2)>div>p').map { |p| p.content.strip }
-    timestamps = @doc.css('.FeedCard>.CardHeadline>div>span.Timestamp').map { |span| span.attribute('title').value.strip[22..49] }
-    stories_url = @doc.css('.FeedCard>.CardHeadline>a').map { |a| "https://www.apnews.com#{a.attribute('href').value.strip}" }
+    timestamps = @doc.css('.FeedCard>.CardHeadline>div>span.Timestamp')
+    timestamps = timestamps.map { |span| span.attribute('title').value.strip[22..49] }
+    stories_url = @doc.css('.FeedCard>.CardHeadline>a')
+    stories_url = stories_url.map { |a| "https://www.apnews.com#{a.attribute('href').value.strip}" }
     arrange_stories(titles, summaries, timestamps, stories_url)
   end
 end
@@ -58,7 +58,8 @@ class BbcScraper < Scraper
     _, *titles = @doc.css('.gs-c-promo-heading>h3').map { |h3| h3.content.strip }
     _, *summaries = @doc.css('p.gs-c-promo-summary').map { |p| p.content.strip }
     _, *timestamps = @doc.css('.gs-c-timestamp>time>span.gs-u-vh').map { |span| span.content.strip }
-    _, *stories_url = @doc.css('a.gs-c-promo-heading').map { |a| "https://www.bbc.com#{a.attribute('href').value.strip}" }
+    _, *stories_url = @doc.css('a.gs-c-promo-heading')
+    stories_url = stories_url.map { |a| "https://www.bbc.com#{a.attribute('href').value.strip}" }
     arrange_stories(titles, summaries, timestamps, stories_url)
   end
 end

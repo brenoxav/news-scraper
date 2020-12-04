@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Terminal colors
 COLOR_1_BG = "\x1b[0;30;43m"
 COLOR_1_FG = "\x1b[0;33;40m"

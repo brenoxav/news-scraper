@@ -1,96 +1,76 @@
-# rubocop: disable Style/GlobalVars
-# rubocop: disable Style/ClassVars
-# rubocop: disable Layout/LineLength
-# rubocop: disable Metrics/ParameterLists
-
+require 'pry' #DELETE THIS BEFOR PUSHING!!!!!!!!!!!
 require 'nokogiri'
 require 'open-uri'
-require 'pry'
+require_relative '../lib/settings'
 
-# Terminal colors
-$COLOR_1_BG = "\x1b[0;30;43m"
-$COLOR_1_FG = "\x1b[0;33;40m"
-$COLOR_2_BG = "\x1b[0;30;42m"
-$COLOR_2_FG = "\x1b[0;32;40m"
-$COLOR_END = "\x1b[0m"
+class Scraper
+  def initialize
+    html = URI.open(@url)
+    @doc = Nokogiri::HTML(html)
+  end
 
-# Number of stories to show from each source
-$NUM_OF_STORIES = 6
+  def print_stories
+    puts "#{COLOR_2_BG} LATEST STORIES FROM #{@source.upcase} #{COLOR_END}\n\n"
+    @stories.each do |story|
+      puts "#{COLOR_1_BG} #{story['title']} (#{story['timestamp']}) #{COLOR_END}"
+      puts "#{COLOR_1_FG} #{story['summary']} #{COLOR_END}\n"
+      puts "#{COLOR_1_FG} #{story['story_url']} #{COLOR_END}\n\n"
+    end
+  end
 
-class Story
-  def get_stories(source, titles, summaries, timestamps, stories_url, num_of_stories)
-    @source = source
+  private
+  def arrange_stories(titles, summaries, timestamps, stories_url)
     @stories = []
-    num_of_stories.times do |i|
+    NUM_OF_STORIES.times do |i|
       @stories[i] = {
-        'source' => source,
+        'source' => @source,
         'title' => titles[i],
         'summary' => summaries[i],
         'timestamp' => timestamps[i],
         'story_url' => stories_url[i]
       }
     end
-    @stories
-  end
-
-  def print_stories
-    puts "#{$COLOR_2_BG} LATEST STORIES FROM #{@source.upcase} #{$COLOR_END}\n\n"
-    @stories.each do |story|
-      puts "#{$COLOR_1_BG} #{story['title']} (#{story['timestamp']}) #{$COLOR_END}"
-      puts "#{$COLOR_1_FG} #{story['summary']} #{$COLOR_END}\n"
-      puts "#{$COLOR_1_FG} #{story['story_url']} #{$COLOR_END}\n\n"
-    end
-  end
-end
-
-class Scraper < Story
-  def initialize(url)
-    @url = url
-    html = URI.open(@url)
-    @doc = Nokogiri::HTML(html)
   end
 end
 
 class ApScraper < Scraper
-  @@url = 'https://apnews.com/hub/international-news'
   def initialize
-    super(@@url)
     @source = 'Associated Press'
+    @url = 'https://apnews.com/hub/international-news'
+    super
     titles = @doc.css('.FeedCard>.CardHeadline>a>h1').map { |h1| h1.content.strip }
     summaries = @doc.css('.FeedCard>a:nth-of-type(2)>div>p').map { |p| p.content.strip }
     timestamps = @doc.css('.FeedCard>.CardHeadline>div>span.Timestamp').map { |span| span.attribute('title').value.strip[22..49] }
     stories_url = @doc.css('.FeedCard>.CardHeadline>a').map { |a| "https://www.apnews.com#{a.attribute('href').value.strip}" }
-    get_stories(@source, titles, summaries, timestamps, stories_url, $NUM_OF_STORIES)
+    arrange_stories(titles, summaries, timestamps, stories_url)
+    @stories
   end
 end
 
 class BbcScraper < Scraper
-  @@url = 'https://www.bbc.com/news/world'
   def initialize
-    super(@@url)
     @source = 'BBC'
+    @url = 'https://www.bbc.com/news/world'
+    super
     _, *titles = @doc.css('.gs-c-promo-heading>h3').map { |h3| h3.content.strip }
     _, *summaries = @doc.css('p.gs-c-promo-summary').map { |p| p.content.strip }
     _, *timestamps = @doc.css('.gs-c-timestamp>time>span.gs-u-vh').map { |span| span.content.strip }
     _, *stories_url = @doc.css('a.gs-c-promo-heading').map { |a| "https://www.bbc.com#{a.attribute('href').value.strip}" }
-    get_stories(@source, titles, summaries, timestamps, stories_url, $NUM_OF_STORIES)
+    arrange_stories(titles, summaries, timestamps, stories_url)
+    @stories
   end
 end
 
 class ReutersScraper < Scraper
-  @@url = 'https://www.reuters.com/news/world'
   def initialize
-    super(@@url)
     @source = 'Reuters'
+    @url = 'https://www.reuters.com/news/world'
+    super
     titles = @doc.css('.story-content>a>h3.story-title').map { |h3| h3.content.strip }
     summaries = @doc.css('.story-content>p').map { |p| p.content.strip }
     timestamps = @doc.css('.story-content>time>span.timestamp').map { |span| span.content.strip }
     stories_url = @doc.css('.story-content>a').map { |a| "https://www.reuters.com#{a.attribute('href').value.strip}" }
-    get_stories(@source, titles, summaries, timestamps, stories_url, $NUM_OF_STORIES)
+    arrange_stories(titles, summaries, timestamps, stories_url)
+    @stories
   end
 end
-
-# rubocop: enable Style/GlobalVars
-# rubocop: enable Style/ClassVars
-# rubocop: enable Layout/LineLength
-# rubocop: enable Metrics/ParameterLists

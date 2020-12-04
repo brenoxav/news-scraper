@@ -1,3 +1,4 @@
+# rubocop: disable Style/GlobalVars
 require 'nokogiri'
 require 'open-uri'
 require 'pry'
@@ -84,3 +85,4 @@ class ReutersScraper < Scraper
     get_stories(@source, titles, summaries, timestamps, stories_url, $NUM_OF_STORIES)
   end
 end
+# rubocop: enable Style/GlobalVars

@@ -6,8 +6,6 @@
 
 ![screenshot](./images/screenshot-1.png)
 ![screenshot](./images/screenshot-2.png)
-![screenshot](./images/screenshot-3.png)
-![screenshot](./images/screenshot-4.png)
 
 A scraper developed in Ruby that scrapes the latest news from three sources: AP, BBC and Reuters websites.
 

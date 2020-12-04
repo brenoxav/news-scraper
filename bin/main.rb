@@ -11,13 +11,11 @@ def print_stories(scrape)
   loop do
     clear
     scrape.print_stories
-    puts "#{COLOR_2_BG} m #{COLOR_END}#{COLOR_2_FG} Menu #{COLOR_END}#{COLOR_2_BG} q #{COLOR_END}#{COLOR_2_FG} Quit #{COLOR_END}"
+    print "#{COLOR_2_BG} m #{COLOR_END}#{COLOR_2_FG} Menu #{COLOR_END}"
+    print "#{COLOR_2_BG} q #{COLOR_END}#{COLOR_2_FG} Quit #{COLOR_END}\n"
     option = gets.chomp.downcase
     print_menu if option == 'm'
-    if option == 'q'
-      clear
-      exit
-    end
+    clear && exit if option == 'q'
   end
 end
 
@@ -34,10 +32,7 @@ def print_menu
     print_stories(ApScraper.new) if option == 'a'
     print_stories(BbcScraper.new) if option == 'b'
     print_stories(ReutersScraper.new) if option == 'r'
-    if option == 'q'
-      clear
-      exit
-    end
+    clear && exit if option == 'q'
   end
 end
 

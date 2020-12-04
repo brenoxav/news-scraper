@@ -1,0 +1,23 @@
+
+[1mFrom:[0m /mnt/x/workspace/microverse/12-ruby-capstone-scraper/news-scraper/bin/main.rb:31 Object#print_stories:
+
+    [1;34m25[0m: [32mdef[0m [1;34mprint_stories[0m(stories)
+    [1;34m26[0m:   loop [32mdo[0m
+    [1;34m27[0m:     clear
+    [1;34m28[0m:     binding.pry
+    [1;34m29[0m:     [1;34m#puts "#{COLOR_2_BG} LATEST STORIES FROM #{stories['source'].upcase} #{COLOR_END}\n\n"[0m
+    [1;34m30[0m: 
+ => [1;34m31[0m:     @stories.each [32mdo[0m |story|
+    [1;34m32[0m:       puts [31m[1;31m"[0m[31m#{COLOR_1_BG}[0m[31m #{story[[1;31m'[0m[31mtitle[1;31m'[0m[31m[0m[31m]}[0m[31m (#{story[[1;31m'[0m[31mtimestamp[1;31m'[0m[31m[0m[31m]}[0m[31m) #{COLOR_END}[0m[31m[1;31m"[0m[31m[0m
+    [1;34m33[0m:       puts [31m[1;31m"[0m[31m#{COLOR_1_FG}[0m[31m #{story[[1;31m'[0m[31msummary[1;31m'[0m[31m[0m[31m]}[0m[31m #{COLOR_END}[0m[31m[1;35m\n[0m[31m[1;31m"[0m[31m[0m
+    [1;34m34[0m:       puts [31m[1;31m"[0m[31m#{COLOR_1_FG}[0m[31m #{story[[1;31m'[0m[31mstory_url[1;31m'[0m[31m[0m[31m]}[0m[31m #{COLOR_END}[0m[31m[1;35m\n[0m[31m[1;35m\n[0m[31m[1;31m"[0m[31m[0m
+    [1;34m35[0m:     [32mend[0m
+    [1;34m36[0m: 
+    [1;34m37[0m:     print [31m[1;31m"[0m[31m#{COLOR_2_BG}[0m[31m m #{COLOR_END}[0m[31m#{COLOR_2_FG}[0m[31m Menu #{COLOR_END}[0m[31m[1;31m"[0m[31m[0m
+    [1;34m38[0m:     print [31m[1;31m"[0m[31m#{COLOR_2_BG}[0m[31m q #{COLOR_END}[0m[31m#{COLOR_2_FG}[0m[31m Quit #{COLOR_END}[0m[31m[1;35m\n[0m[31m[1;31m"[0m[31m[0m
+    [1;34m39[0m:     option = gets.chomp.downcase
+    [1;34m40[0m:     print_menu [32mif[0m option == [31m[1;31m'[0m[31mm[1;31m'[0m[31m[0m
+    [1;34m41[0m:     clear && exit [32mif[0m option == [31m[1;31m'[0m[31mq[1;31m'[0m[31m[0m
+    [1;34m42[0m:   [32mend[0m
+    [1;34m43[0m: [32mend[0m
+

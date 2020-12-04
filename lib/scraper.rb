@@ -1,8 +1,8 @@
-require 'pry' #DELETE THIS BEFOR PUSHING!!!!!!!!!!!
 require 'nokogiri'
 require 'open-uri'
 require_relative '../lib/settings'
 
+# Fetch data from a website
 class Scraper
   def initialize
     html = URI.open(@url)
@@ -19,11 +19,11 @@ class Scraper
   end
 
   private
+
   def arrange_stories(titles, summaries, timestamps, stories_url)
     @stories = []
     NUM_OF_STORIES.times do |i|
       @stories[i] = {
-        'source' => @source,
         'title' => titles[i],
         'summary' => summaries[i],
         'timestamp' => timestamps[i],
@@ -33,6 +33,7 @@ class Scraper
   end
 end
 
+# Fetch and format data from the AP website
 class ApScraper < Scraper
   def initialize
     @source = 'Associated Press'
@@ -43,10 +44,10 @@ class ApScraper < Scraper
     timestamps = @doc.css('.FeedCard>.CardHeadline>div>span.Timestamp').map { |span| span.attribute('title').value.strip[22..49] }
     stories_url = @doc.css('.FeedCard>.CardHeadline>a').map { |a| "https://www.apnews.com#{a.attribute('href').value.strip}" }
     arrange_stories(titles, summaries, timestamps, stories_url)
-    @stories
   end
 end
 
+# Fetch and format data from the BBC website
 class BbcScraper < Scraper
   def initialize
     @source = 'BBC'
@@ -57,10 +58,10 @@ class BbcScraper < Scraper
     _, *timestamps = @doc.css('.gs-c-timestamp>time>span.gs-u-vh').map { |span| span.content.strip }
     _, *stories_url = @doc.css('a.gs-c-promo-heading').map { |a| "https://www.bbc.com#{a.attribute('href').value.strip}" }
     arrange_stories(titles, summaries, timestamps, stories_url)
-    @stories
   end
 end
 
+# Fetch and format data from the Reuters website
 class ReutersScraper < Scraper
   def initialize
     @source = 'Reuters'
@@ -71,6 +72,5 @@ class ReutersScraper < Scraper
     timestamps = @doc.css('.story-content>time>span.timestamp').map { |span| span.content.strip }
     stories_url = @doc.css('.story-content>a').map { |a| "https://www.reuters.com#{a.attribute('href').value.strip}" }
     arrange_stories(titles, summaries, timestamps, stories_url)
-    @stories
   end
 end

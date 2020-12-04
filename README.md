@@ -7,15 +7,15 @@
 ![screenshot](./images/screenshot-1.png)
 ![screenshot](./images/screenshot-2.png)
 
-A scraper developed in Ruby that scrapes the latest news from three sources: AP, BBC and Reuters websites.
+A scraper developed in Ruby that gets the latest stories from the 'world news' frontpage of the websites: AP, BBC, and Reuters.
 
 ## Built With
 
-- Ruby
-- Bundle
-- Nokogiri
-- RSpec
-- Rubocop
+- Ruby 2.7
+- Bundle 2.1.4
+- Nokogiri 1.10.10
+- RSpec 3.10
+- Rubocop 1.3.0
 
 
 ## Getting Started
@@ -24,8 +24,8 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-- Ruby
-- A terminal 
+- Ruby 2.7
+- A terminal
 
 ### Setup
 
@@ -42,7 +42,7 @@ bundle install
 
 ### Usage
 
-- Go into the the project's root directory "news-craper"
+- Go into the the project's root directory "news-scraper"
 - Execute the "main.rb" file
 
 ```

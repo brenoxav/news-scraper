@@ -25,4 +25,3 @@ PLATFORMS
 DEPENDENCIES
   nokogiri (>= 1.10.10)
   rspec (>= 3.10.0)
-

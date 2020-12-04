@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 # rubocop: disable Style/GlobalVars
+# rubocop: disable Layout/LineLength
 
 require_relative '../lib/scraper'
 
@@ -43,3 +44,4 @@ end
 
 print_menu
 # rubocop: enable Style/GlobalVars
+# rubocop: enable Layout/LineLength

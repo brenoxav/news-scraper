@@ -9,13 +9,8 @@ $COLOR_2_BG = "\x1b[0;30;42m"
 $COLOR_2_FG = "\x1b[0;32;40m"
 $COLOR_END = "\x1b[0m"
 
-# News sources URL's
-$REUTERS_URL = 'https://www.reuters.com/news/world'
-$AP_URL = 'https://apnews.com/hub/international-news'
-$BBC_URL = 'https://www.bbc.com/news/world'
-
 # Number of stories
-$NUM_OF_STORIES = 3
+$NUM_OF_STORIES = 6
 
 class Story
   def get_stories (source, titles, summaries, timestamps, stories_url, num_of_stories)
@@ -46,50 +41,50 @@ end
 class Scraper < Story
   def initialize(url)
     @url = url
-    @doc = get_doc(url)
+    @doc = get_doc
   end
-  def get_doc(url)
-    html = URI.open(@url)
-    doc = Nokogiri::HTML(html)
-    doc
-  end
-end
 
-class ReutersScraper < Scraper
-  @@url = $REUTERS_URL
-  def initialize
-    super(@@url)
-    @source = 'Reuters'
-    titles = @doc.css('.story-content>a>h3.story-title').map { |h3| h3.content.strip }
-    summaries = @doc.css('.story-content>p').map { |p| p.content.strip }
-    timestamps = @doc.css('.story-content>time>span.timestamp').map { |span| span.content.strip }
-    stories_url = @doc.css('.story-content>a').map { |a| 'https://www.reuters.com'+a.attribute('href').value.strip }
-    get_stories(@source, titles, summaries, timestamps, stories_url, $NUM_OF_STORIES)
+  def get_doc
+    html = URI.open(@url)
+    Nokogiri::HTML(html)
   end
 end
 
 class ApScraper < Scraper
-  @@url = $AP_URL
+  @@url = 'https://apnews.com/hub/international-news'
   def initialize
     super(@@url)
     @source = 'Associated Press'
     titles = @doc.css('.FeedCard>.CardHeadline>a>h1').map { |h1| h1.content.strip }
     summaries = @doc.css('.FeedCard>a:nth-of-type(2)>div>p').map { |p| p.content.strip }
     timestamps = @doc.css('.FeedCard>.CardHeadline>div>span.Timestamp').map { |span| span.attribute('title').value.strip[22..49] }
-    stories_url = @doc.css('.FeedCard>.CardHeadline>a').map { |a| 'https://www.apnews.com'+a.attribute('href').value.strip }
+    stories_url = @doc.css('.FeedCard>.CardHeadline>a').map { |a| "https://www.apnews.com#{a.attribute('href').value.strip}" }
     get_stories(@source, titles, summaries, timestamps, stories_url, $NUM_OF_STORIES)
   end
 end
 
 class BbcScraper < Scraper
-  @@url = $BBC_URL
+  @@url = 'https://www.bbc.com/news/world'
   def initialize
     super(@@url)
     @source = 'BBC'
-    x, *titles = @doc.css('.gs-c-promo-heading>h3').map { |h3| h3.content.strip }
-    x, *summaries = @doc.css('p.gs-c-promo-summary').map { |p| p.content.strip }
-    x, *timestamps = @doc.css('.gs-c-timestamp>time>span.gs-u-vh').map { |span| span.content.strip }
-    x, *stories_url = @doc.css('a.gs-c-promo-heading').map { |a| 'https://www.bbc.com'+a.attribute('href').value.strip }
+    _, *titles = @doc.css('.gs-c-promo-heading>h3').map { |h3| h3.content.strip }
+    _, *summaries = @doc.css('p.gs-c-promo-summary').map { |p| p.content.strip }
+    _, *timestamps = @doc.css('.gs-c-timestamp>time>span.gs-u-vh').map { |span| span.content.strip }
+    _, *stories_url = @doc.css('a.gs-c-promo-heading').map { |a| "https://www.bbc.com#{a.attribute('href').value.strip}" }
+    get_stories(@source, titles, summaries, timestamps, stories_url, $NUM_OF_STORIES)
+  end
+end
+
+class ReutersScraper < Scraper
+  @@url = 'https://www.reuters.com/news/world'
+  def initialize
+    super(@@url)
+    @source = 'Reuters'
+    titles = @doc.css('.story-content>a>h3.story-title').map { |h3| h3.content.strip }
+    summaries = @doc.css('.story-content>p').map { |p| p.content.strip }
+    timestamps = @doc.css('.story-content>time>span.timestamp').map { |span| span.content.strip }
+    stories_url = @doc.css('.story-content>a').map { |a| "https://www.reuters.com#{a.attribute('href').value.strip}" }
     get_stories(@source, titles, summaries, timestamps, stories_url, $NUM_OF_STORIES)
   end
 end

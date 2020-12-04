@@ -2,45 +2,65 @@
 
 # News Scraper
 
-> One paragraph statement about the project.
+> Terminal news scraper in Ruby.
 
-![screenshot](./app_screenshot.png)
+![screenshot](./images/screenshot-1.png)
+![screenshot](./images/screenshot-2.png)
+![screenshot](./images/screenshot-3.png)
+![screenshot](./images/screenshot-4.png)
 
-Additional description about the project and its features.
+A scraper developed in Ruby that scrapes the latest news from three sources: AP, BBC and Reuters websites.
 
 ## Built With
 
 - Ruby
+- Bundle
 - Nokogiri
 - RSpec
 - Rubocop
 
-## Live Demo
-
-[Live Demo Link](https://livedemo.com)
-
 
 ## Getting Started
-
-**This is an example of how you may give instructions on setting up your project locally.**
-**Modify this file to match your project, remove sections that don't apply. For example: delete the testing section if the currect project doesn't require testing.**
-
 
 To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
+- Ruby
+- A terminal 
+
 ### Setup
+
+- Clone or download this repository
+- If necessary, unzip the downloaded directory
 
 ### Install
 
+- From the project's root directory, execute 'bundle' to install all the necessary gems
+
+```
+bundle install
+```
+
 ### Usage
+
+- Go into the the project's root directory "news-craper"
+- Execute the "main.rb" file
+
+```
+./bin/main.rb
+```
+
+- Follow the instructions on the screen an choose one of the news source to get the latest stories
+
 
 ### Run tests
 
-### Deployment
+- From the project's root directory, execute 'RSpec' to run the tests
 
-
+```
+rspec
+```
 
 ## Authors
 
@@ -54,7 +74,7 @@ To get a local copy up and running follow these simple example steps.
 
 Contributions, issues, and feature requests are welcome!
 
-Feel free to check the [issues page](issues/).
+Feel free to check the [issues page](https://github.com/brenoxav/news-scraper/issues).
 
 ## Show your support
 
@@ -62,10 +82,5 @@ Give a ⭐️ if you like this project!
 
 ## Acknowledgments
 
-- Hat tip to anyone whose code was used
-- Inspiration
-- etc
-
-## 📝 License
-
-This project is [MIT](lic.url) licensed.
+- Microverse
+- Odin Project

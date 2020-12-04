@@ -9,7 +9,7 @@ $COLOR_2_BG = "\x1b[0;30;42m"
 $COLOR_2_FG = "\x1b[0;32;40m"
 $COLOR_END = "\x1b[0m"
 
-# Number of stories
+# Number of stories to show from each source
 $NUM_OF_STORIES = 6
 
 class Story

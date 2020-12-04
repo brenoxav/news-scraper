@@ -23,8 +23,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  nokogiri
-  rspec
+  nokogiri (>= 1.10.10)
+  rspec (>= 3.10.0)
 
 BUNDLED WITH
    2.1.4

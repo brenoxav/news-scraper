@@ -13,40 +13,36 @@ $COLOR_END = "\x1b[0m"
 $NUM_OF_STORIES = 6
 
 class Story
-  def get_stories (source, titles, summaries, timestamps, stories_url, num_of_stories)
+  def get_stories(source, titles, summaries, timestamps, stories_url, num_of_stories)
     @source = source
-    @stories = Array.new
-    num_of_stories.times { |i|
+    @stories = []
+    num_of_stories.times do |i|
       @stories[i] = {
-        "source" => source,
-        "title" => titles[i],
-        "summary" => summaries[i],
-        "timestamp" => timestamps[i],
-        "story_url" => stories_url[i]
+        'source' => source,
+        'title' => titles[i],
+        'summary' => summaries[i],
+        'timestamp' => timestamps[i],
+        'story_url' => stories_url[i]
       }
-    }
+    end
     @stories
   end
 
   def print_stories
     puts "#{$COLOR_2_BG} LATEST STORIES FROM #{@source.upcase} #{$COLOR_END}\n\n"
-    @stories.each { |story|
+    @stories.each do |story|
       puts "#{$COLOR_1_BG} #{story['title']} (#{story['timestamp']}) #{$COLOR_END}"
       puts "#{$COLOR_1_FG} #{story['summary']} #{$COLOR_END}\n"
       puts "#{$COLOR_1_FG} #{story['story_url']} #{$COLOR_END}\n\n"
-    }
+    end
   end
 end
 
 class Scraper < Story
   def initialize(url)
     @url = url
-    @doc = get_doc
-  end
-
-  def get_doc
     html = URI.open(@url)
-    Nokogiri::HTML(html)
+    @doc = Nokogiri::HTML(html)
   end
 end
 

@@ -1,8 +1,7 @@
 # rubocop: disable Style/GlobalVars
+# rubocop: disable Style/ClassVars
 # rubocop: disable Layout/LineLength
 # rubocop: disable Metrics/ParameterLists
-# rubocop: disable Style/ClassVars
-
 
 require 'nokogiri'
 require 'open-uri'
@@ -90,7 +89,8 @@ class ReutersScraper < Scraper
     get_stories(@source, titles, summaries, timestamps, stories_url, $NUM_OF_STORIES)
   end
 end
+
 # rubocop: enable Style/GlobalVars
+# rubocop: enable Style/ClassVars
 # rubocop: enable Layout/LineLength
 # rubocop: enable Metrics/ParameterLists
-# rubocop: enable Style/ClassVars

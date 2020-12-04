@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+# rubocop: disable Style/GlobalVars
+
 require_relative '../lib/scraper'
 
 def clear
@@ -40,3 +42,4 @@ def print_menu
 end
 
 print_menu
+# rubocop: enable Style/GlobalVars

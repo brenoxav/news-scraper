@@ -6,4 +6,4 @@ COLOR_2_FG = "\x1b[0;32;40m".freeze
 COLOR_END = "\x1b[0m".freeze
 
 # Number of stories to show from each source
-NUM_OF_STORIES = 6.freeze
+NUM_OF_STORIES = 6
